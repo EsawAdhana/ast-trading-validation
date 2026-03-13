@@ -30,7 +30,7 @@ esawadhana@stanford.edu}}
 % ============================================================
 \begin{abstract}
 Validating the safety of algorithmic trading strategies is challenging because
-catastrophic failure events, such large, rapid "drawdowns" are rare under normal market conditions, making naïve Monte Carlo (MC) sampling computationally expensive. We apply Adaptive Stress Testing (AST), a reinforcement learning
+catastrophic failure events, such as large, rapid drawdowns are rare under normal market conditions, making naïve Monte Carlo (MC) sampling computationally expensive. We apply Adaptive Stress Testing (AST), a reinforcement learning
 framework that trains an adversarial agent to efficiently discover worst-case
 failure trajectories in a target system. We evaluate AST against a Simple Moving Average (SMA) crossover trading strategy in a simulated market environment across two victim configurations: a baseline strategy (V1, with 5-step exit lag) and a more robust strategy (V2, 3-step exit lag).
 An adversarial Proximal Policy Optimization (PPO) agent is trained against each victim, and importance sampling (IS) is used to translate the biased adversarial failure trajectories
@@ -241,8 +241,8 @@ and does not trade it away for incremental damage rewards.
 
 Adversary A1 is trained against V1 for 200{,}000 timesteps using four
 parallel environments, at which point training has converged.
-Adversary A2 is trained against V2 for 400{,}000 timesteps,double the
-budget of A1,o give the adversary ample opportunity to discover exploits
+Adversary A2 is trained against V2 for 400{,}000 timesteps, double the
+budget of A1, to give the adversary ample opportunity to discover exploits
 against the more robust victim. The fact that A2 still achieves only $62.0 \pm
 2.6\%$ failure rate despite twice the training compute directly quantifies
 the increase in adversarial sample complexity imposed by V2's reduced exit lag.
@@ -267,6 +267,24 @@ we apply trajectory-level importance sampling. For a trajectory of length $T$:
 where $\log \pi_0(\varepsilon) = -\tfrac{1}{2}\varepsilon^2 - \tfrac{1}{2}\log(2\pi)$
 and $\log \pi_\theta(\varepsilon \mid s)$ is obtained from the PPO policy via
 \texttt{evaluate\_actions} in Stable-Baselines3~\cite{raffin2021sb3}.
+Two important considerations for IS validity. First, the likelihood penalty
+$-0.05\,\varepsilon_t^2$ in the reward (Eq.~3) penalizes
+$\mathbb{E}[\varepsilon_t^2] = \mu_t^2 + \sigma_t^2$, which
+encourages the policy to learn a \emph{mean} closer to zero, not merely to
+reduce the magnitude of individual samples. These are distinct because only the
+former changes the IS denominator $\log\pi_\theta(\varepsilon_t\mid s_t)$ via
+the learned mean parameter. Crucially, because stochastic action sampling is
+used at evaluation time (not the deterministic mean), $\log\pi_\theta$ is
+evaluated under the exact same distribution from which actions are drawn,
+preserving IS validity regardless of how the penalty shapes the learned mean
+versus variance (see Sec.~\ref{sec:limitations} for further discussion).
+Second, \texttt{evaluate\_actions} in SB3 returns log-probabilities under the
+unconstrained Gaussian $\mathcal{N}(\mu_t,\sigma_t^2)$, not the truncated
+distribution induced by clipping actions to the $[-3,3]$ interval. For V2, where the
+adversary's mean actions are moderate, this approximation is negligible. For
+V1, where actions frequently approach the $\pm 3$ boundary, the pre-clipping
+log-prob can differ from the true truncated log-prob, introducing a systematic
+(though likely small) bias in IS weights.
 The IS estimate of the failure probability over $N$ AST episodes is:
 \begin{equation}
   \hat{P}_0(\text{failure}) = \frac{1}{N}\sum_{i=1}^{N} w^{(i)} \cdot \mathds{1}[\text{failure}_i].
@@ -399,7 +417,8 @@ failure in a mean of $6.8 \pm 0.0$ steps, while MC-found failures occur at a
 mean of $51.5 \pm 20.7$ steps. This indicates the adversary has learned a
 precise and quick-acting attack that exploits the V1 bot's 5-step exit lag:
 it delivers a rapid succession of large negative returns before the
-SMA crossover signal can trigger an exit.
+SMA crossover signal can trigger an exit. The zero standard deviation in V1+AST time-to-failure reflects the deterministic structure of the learned attack: A1 consistently triggers the 5-step exit lag condition within the same window regardless of the stochastic action draws.
+
 
 \textbf{Adversarial sample complexity of V2.}
 Against the more robust V2 strategy, the adversary trained for twice the
@@ -415,12 +434,12 @@ training timesteps to reliably produce.
 \textbf{Importance sampling interpretation.}
 The IS-corrected probabilities reveal a striking reversal of intuition.
 For V1, $\hat{P}_0(\text{failure}) \approx 1.5 \times 10^{-11}$
-($\pm 7.7 \times 10^{-12}$): these failures require extremely non-nominal
+($\pm 7.7 \times 10^{-12}$; see Limitations for further discussion): these failures require extremely non-nominal
 actions (avg NLL $4.868 \pm 0.012$ vs.\ $1.420 \pm 0.005$ for MC),
 corresponding to sustained ${\approx}3\sigma$ market moves that are
 astronomically rare in practice. For V2, however,
 $\hat{P}_0(\text{failure}) \approx 2.0 \times 10^{-3}$
-($\pm 3.4 \times 10^{-4}$),more than eight orders of magnitude higher.
+($\pm 3.4 \times 10^{-4}$), more than eight orders of magnitude higher.
 V2's failures, while harder to find adversarially, occur through more
 moderate and realistic market sequences (avg NLL $1.561 \pm 0.005$, only
 slightly above the nominal $1.420 \pm 0.005$). This means that although V2
@@ -449,7 +468,7 @@ adversarial findings into meaningful safety statements.
 
 The iterative robustness improvement experiment illustrates a practical validation
 workflow: AST identifies the specific mechanism by which V1 fails
-(exploitation of exit lag via rapid quick-acting crashes), which directly
+(exploitation of exit lag via quick-acting crashes), which directly
 motivates the V2 design choice (reduced exit lag from 5 to 3 steps).
 The subsequent AST evaluation of V2 reveals both that V2 is harder to
 adversarially exploit and that its residual failures are far more
@@ -458,7 +477,7 @@ realistic under the nominal distribution
 of adversarial sample complexity and IS-corrected probability is a more
 nuanced safety certificate than either metric alone could provide.
 
-\textbf{Limitations.}
+\subsection*{Limitations}\label{sec:limitations}
 The simulation model is simplified: asset price dynamics follow a
 single-asset, constant-volatility model, and the victim strategy does
 not incorporate transaction costs, slippage, or portfolio-level risk
@@ -478,6 +497,36 @@ more calibrated failure probability estimates. Future work could also
 extend the framework to multi-asset portfolios, more realistic
 microstructure models, and victim strategies with learned (RL-based)
 policies, which would introduce a more complex adversarial interaction.
+
+A further limitation concerns IS weight degeneracy for V1. The V1
+adversary operates at a mean NLL of $4.868$ nats/step versus the
+nominal $1.420$, producing per-trajectory importance weights on the
+order of $e^{-345}$ over a 100-step episode. Here, the
+effective sample size:
+\[
+  \mathrm{ESS} = \frac{\bigl(\sum_i w^{(i)}\bigr)^2}{\sum_i \bigl(w^{(i)}\bigr)^2}
+\]
+is likely in the single digits, meaning the IS estimate of
+$1.5\!\times\!10^{-11}$ rests on very few effective trajectories and
+should be interpreted as an order-of-magnitude indicator rather than a
+precise probability. The V2 estimate ($2.0\!\times\!10^{-3}$, NLL gap
+of only $0.14$ nats/step) does not suffer from this issue to the same
+degree.
+
+A second IS validity caveat concerns action-space clipping.
+The adversary's action space is $\varepsilon_t\in[-3,3]$, but the PPO policy
+is an unconstrained Gaussian; SB3 clips sampled actions to $[-3,3]$ before
+stepping the environment. The log-probabilities returned by
+\texttt{evaluate\_actions} are computed under the \emph{pre-clipping}
+Gaussian, not under the truncated distribution that describes the actual
+sampling procedure. For V1, the adversary saturates near the $\pm 3$
+boundary (avg.\ NLL $4.868$ nats/step $\approx 3\sigma$ actions), so a
+non-trivial probability mass lies outside $[-3,3]$ and the pre-clipping
+log-prob understates $\log\pi_\theta(\varepsilon_t\mid s_t)$, biasing IS
+weights upward. For V2, whose mean actions are far from the boundary (NLL
+$1.561$ nats/step), the truncation effect is negligible. Correcting this
+bias would require replacing the Gaussian with an explicitly truncated
+normal or using a tanh-squashed policy, and is left for future work.
 
 \textbf{Conclusion.}
 Safety validation of financial systems requires methods that can
