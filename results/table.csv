@@ -1,0 +1,6 @@
+Metric,V1 AST,V1 MC,V2 AST,V2 MC
+Failure Rate (%),100.0%,1.4%,61.6%,0.6%
+IS-estimated P(failure),4.690e-11,N/A,3.228e-03,N/A
+Avg NLL (nats/step),4.854,1.424,1.560,1.420
+Avg Time-to-Failure (steps),6.8,48.1,27.2,59.3
+Avg Min Portfolio ($),678.1,884.4,706.3,887.6

@@ -1,0 +1,65 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{lee2015adaptive,koren2018adaptive,lee2020adaptive}
+\citation{lee2015adaptive}
+\citation{koren2018adaptive}
+\citation{lee2020adaptive}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Adaptive Stress Testing}{1}{subsection.2.1}\protected@file@percent }
+\citation{tokdar2010is}
+\citation{zhao2016accelerated}
+\citation{corso2021survey}
+\citation{brock1992sma}
+\citation{kirilenko2017flash}
+\citation{brunnermeier2005predatory}
+\citation{tokdar2010is}
+\citation{corso2021survey}
+\citation{lee2015adaptive,koren2018adaptive,lee2020adaptive}
+\citation{schulman2017ppo}
+\citation{raffin2021sb3}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Rare-Event Estimation via Importance Sampling}{2}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Algorithmic Trading Safety}{2}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}Background}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Importance Sampling for Failure Probability}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Adaptive Stress Testing}{2}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Methodology}{2}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Simulation Environment}{2}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Victim Trading Strategies}{2}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Adversarial AST Agent}{2}{subsection.4.3}\protected@file@percent }
+\citation{raffin2021sb3}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Monte Carlo Baseline}{3}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Importance Sampling Failure Probability Estimation}{3}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Experiments and Results}{3}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{3}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Hyperparameters}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:hyperparams}{{I}{3}{Hyperparameters}{table.1}{}}
+\newlabel{eq:nll}{{7}{3}{Experimental Setup}{equation.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Quantitative Results}{3}{subsection.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Results: mean $\pm $ std over 5 trials $\times $ 500 episodes each}}{3}{table.2}\protected@file@percent }
+\newlabel{tab:results}{{II}{3}{Results: mean $\pm $ std over 5 trials $\times $ 500 episodes each}{table.2}{}}
+\citation{cont2001empirical}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Representative market price (top) and portfolio value (bottom) trajectories for adversarial AST (red) and nominal Monte Carlo (blue) conditions, for both the baseline V1 victim (left) and more robust V2 victim (right). The dashed horizontal line marks the \$700 failure threshold.}}{4}{figure.1}\protected@file@percent }
+\newlabel{fig:trajectories}{{1}{4}{Representative market price (top) and portfolio value (bottom) trajectories for adversarial AST (red) and nominal Monte Carlo (blue) conditions, for both the baseline V1 victim (left) and more robust V2 victim (right). The dashed horizontal line marks the \$700 failure threshold}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Distribution of time-to-failure steps, conditioned on episodes where a failure occurred, for AST (red) and Monte Carlo (blue). V1+AST failures cluster sharply around 5--10 steps (mean $6.8 \pm 0.0$); V1+MC failures occur much later (mean $51.5 \pm 20.7$ steps) and are rare ($0.4 \pm 0.3\%$). V2+AST failures ($62.0 \pm 2.6\%$ rate) are spread across a wider range with a mean of $26.3 \pm 0.3$ steps, reflecting the longer, more nuanced attack sequence the adversary must discover against the more robust strategy.}}{4}{figure.2}\protected@file@percent }
+\newlabel{fig:histogram}{{2}{4}{Distribution of time-to-failure steps, conditioned on episodes where a failure occurred, for AST (red) and Monte Carlo (blue). V1+AST failures cluster sharply around 5--10 steps (mean $6.8 \pm 0.0$); V1+MC failures occur much later (mean $51.5 \pm 20.7$ steps) and are rare ($0.4 \pm 0.3\%$). V2+AST failures ($62.0 \pm 2.6\%$ rate) are spread across a wider range with a mean of $26.3 \pm 0.3$ steps, reflecting the longer, more nuanced attack sequence the adversary must discover against the more robust strategy}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Analysis}{4}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion and Conclusion}{4}{section.6}\protected@file@percent }
+\bibstyle{IEEEtran}
+\bibdata{references}
+\bibcite{lee2015adaptive}{1}
+\bibcite{koren2018adaptive}{2}
+\bibcite{lee2020adaptive}{3}
+\bibcite{tokdar2010is}{4}
+\bibcite{zhao2016accelerated}{5}
+\bibcite{corso2021survey}{6}
+\bibcite{brock1992sma}{7}
+\bibcite{kirilenko2017flash}{8}
+\bibcite{brunnermeier2005predatory}{9}
+\bibcite{schulman2017ppo}{10}
+\bibcite{raffin2021sb3}{11}
+\bibcite{cont2001empirical}{12}
+\@writefile{toc}{\contentsline {section}{References}{5}{section*.1}\protected@file@percent }
+\gdef \@abspage@last{5}
